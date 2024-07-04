@@ -1,0 +1,21 @@
+{
+    "name": "authy-js",
+    "version": "0.0.0-beta.2",
+    "description": "",
+    "main": "dist/index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "devDependencies": {
+        "prettier": "^3.3.2",
+        "tsx": "^4.16.2",
+        "typescript": "^5.5.3"
+    },
+    "keywords": [
+        "authy-js",
+        "authentication",
+        "auth"
+    ],
+    "author": "MI Sajid",
+    "license": "ISC"
+}
