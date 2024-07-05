@@ -1,13 +1,23 @@
 {
     "name": "authy-js",
-    "version": "0.0.0-beta.2",
+    "version": "0.0.0-beta.3",
     "description": "",
-    "main": "dist/index.js",
+    "type": "module",
+    "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "prebuild": "shx rm -r dist",
+        "build": "tsc && shx cp package.json dist",
+        "upload": "cd dist && npm publish"
+    },
+    "dependencies": {
+        "mongoose": "^8.4.4",
+        "uuid": "^10.0.0"
     },
     "devDependencies": {
+        "@types/express": "^4.17.21",
+        "@types/uuid": "^10.0.0",
         "prettier": "^3.3.2",
+        "shx": "^0.3.4",
         "tsx": "^4.16.2",
         "typescript": "^5.5.3"
     },
