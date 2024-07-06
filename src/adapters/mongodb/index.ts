@@ -50,15 +50,10 @@ export class MongodbAdapter implements Adapter {
     }
 
     async getUserBySessionId(sessionId: string): Promise<UserResponse> {
-        if (!sessionId) return sendError("Session ID is required")
         try {
-            const session = await this.Session.findById(sessionId)
-            if (!session) return sendError("Couldn't find session")
-            if (isSessionExpired(session)) {
-                await session.deleteOne()
-                return sendError("Session has expired")
-            }
-            const user = await this.User.findById(session.userId)
+            const response = await this.getSession(sessionId)
+            if (!response.success) return response
+            const user = await this.User.findById(response.session.userId)
             if (!user) return sendError("User not found")
             return { success: true, user }
         } catch (error) {
