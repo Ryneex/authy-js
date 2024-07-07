@@ -5,8 +5,8 @@
     "type": "module",
     "main": "index.js",
     "scripts": {
-        "prebuild": "shx rm -r dist",
-        "build": "tsc && shx cp package.json dist",
+        "prebuild": "shx rm -rf dist",
+        "build": "tsc && tsc-alias && shx cp package.json dist",
         "upload": "cd dist && npm publish"
     },
     "dependencies": {
@@ -19,6 +19,7 @@
         "@types/uuid": "^10.0.0",
         "prettier": "^3.3.2",
         "shx": "^0.3.4",
+        "tsc-alias": "^1.8.10",
         "tsx": "^4.16.2",
         "typescript": "^5.5.3"
     },
