@@ -1,5 +1,3 @@
-import { ISession } from "@/types"
-
-export function formatSession(session: { id: string; userId: string; expiresAt: string | Date }): ISession {
-    return { id: session.id, userId: session.userId, expiresAt: new Date(session.expiresAt) }
+export function formatSession<T>(session: { expiresAt: Date | string; [x: string]: unknown }): T {
+    return { ...session, expiresAt: new Date(session.expiresAt) } as T
 }

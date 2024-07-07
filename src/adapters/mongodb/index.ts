@@ -1,40 +1,39 @@
 import type mongoose from "mongoose"
 import { type Model } from "mongoose"
-import getSessionModel from "./helpers/getSessionModel"
-import { formatSession } from "./helpers/formatSession"
-import { Adapter, ISession, SessionResponse, UserResponse } from "@/types"
+import { Adapter, ICreateSessionOpts, SessionResponse, UserResponse } from "@/types"
+import { sendError } from "@/utils/sendError"
 
 interface IConstructor {
     User: Model<any>
+    Session: Model<any>
     dbConnectionUrl?: string
-    mongoose: typeof mongoose
+    mongoose?: typeof mongoose
 }
 
-const sendError = (message: string): { success: false; message: string } => ({ success: false, message })
-const isSessionExpired = (session: ISession) => new Date() > session.expiresAt
+const isSessionExpired = (session: any) => new Date() > session.expiresAt
 
 export class MongodbAdapter implements Adapter {
-    private Session: Model<ISession>
+    private Session: Model<any>
     private User: Model<any>
 
-    constructor({ User, dbConnectionUrl, mongoose }: IConstructor) {
+    constructor({ User, Session, dbConnectionUrl, mongoose }: IConstructor) {
         // connect mongoose instance thats passed from server, if not connected
-        if (dbConnectionUrl) !mongoose.connection.readyState && mongoose.connect(dbConnectionUrl)
-        this.Session = getSessionModel(User, mongoose)
+        if (dbConnectionUrl) !mongoose?.connection.readyState && mongoose?.connect(dbConnectionUrl)
+        this.Session = Session
         this.User = User
     }
 
-    async createSession(opts: { userId: string; expiresIn: number }): Promise<SessionResponse> {
+    async createSession<T>(opts: ICreateSessionOpts): Promise<SessionResponse<T>> {
         try {
-            const session = await this.Session.create({ userId: opts.userId, expiresAt: new Date(Date.now() + opts.expiresIn) })
+            const session = await this.Session.create(opts)
             if (!session) return sendError("Couldn't create session")
-            return { success: true, session: formatSession(session) }
+            return { success: true, session: session }
         } catch (error) {
-            return sendError("Something went wrong, couldn't create session")
+            return sendError(error)
         }
     }
 
-    async getSession(sessionId: string): Promise<SessionResponse> {
+    async getSession<T>(sessionId: string): Promise<SessionResponse<T>> {
         if (!sessionId) return sendError("Session ID is required")
         try {
             const session = await this.Session.findById(sessionId)
@@ -43,7 +42,7 @@ export class MongodbAdapter implements Adapter {
                 await session.deleteOne()
                 return sendError("Session has expired")
             }
-            return { success: true, session: formatSession(session) }
+            return { success: true, session }
         } catch (error) {
             return sendError("Something went wrong, couldn't get session")
         }
@@ -51,7 +50,7 @@ export class MongodbAdapter implements Adapter {
 
     async getUserBySessionId<T>(sessionId: string): Promise<UserResponse<T>> {
         try {
-            const response = await this.getSession(sessionId)
+            const response = await this.getSession<ICreateSessionOpts>(sessionId)
             if (!response.success) return response
             const user = await this.User.findById(response.session.userId)
             if (!user) return sendError("User not found")
@@ -72,12 +71,12 @@ export class MongodbAdapter implements Adapter {
         }
     }
 
-    async deleteSession(sessionId: string): Promise<SessionResponse> {
+    async deleteSession<T>(sessionId: string): Promise<SessionResponse<T>> {
         if (!sessionId) return sendError("Session ID is required")
         try {
             const session = await this.Session.findByIdAndDelete(sessionId)
             if (!session) return sendError("Couldn't delete session")
-            return { success: true, session: formatSession(session) }
+            return { success: true, session: session }
         } catch (error) {
             return sendError("Something went wrong, couldn't delete session")
         }
