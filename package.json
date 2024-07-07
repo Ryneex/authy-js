@@ -1,7 +1,7 @@
 {
     "name": "authy-js",
     "version": "0.0.0-beta.4",
-    "description": "",
+    "description": "A modular authentication library supporting multiple frameworks and session storage adapters.",
     "type": "module",
     "main": "index.js",
     "scripts": {
@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "mongoose": "^8.4.4",
+        "redis": "^4.6.15",
         "uuid": "^10.0.0"
     },
     "devDependencies": {
@@ -20,6 +21,10 @@
         "shx": "^0.3.4",
         "tsx": "^4.16.2",
         "typescript": "^5.5.3"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ryneex/authy-js.git"
     },
     "keywords": [
         "authy-js",
