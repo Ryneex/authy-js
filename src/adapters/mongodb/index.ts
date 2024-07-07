@@ -49,7 +49,7 @@ export class MongodbAdapter implements Adapter {
         }
     }
 
-    async getUserBySessionId(sessionId: string): Promise<UserResponse> {
+    async getUserBySessionId<T>(sessionId: string): Promise<UserResponse<T>> {
         try {
             const response = await this.getSession(sessionId)
             if (!response.success) return response
@@ -61,7 +61,7 @@ export class MongodbAdapter implements Adapter {
         }
     }
 
-    async getUserByUserId(userId: string): Promise<UserResponse> {
+    async getUserByUserId<T>(userId: string): Promise<UserResponse<T>> {
         if (!userId) return sendError("User ID is required")
         try {
             const user = await this.User.findById(userId)

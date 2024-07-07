@@ -6,7 +6,7 @@ declare global {
         interface Request {
             auth: {
                 createSession: (opts: { userId: string; expiresIn: number }) => Promise<SessionResponse>
-                getCurrentUser: () => Promise<UserResponse>
+                getCurrentUser: <T>() => Promise<UserResponse<T>>
                 getCurrentSession: () => Promise<SessionResponse>
                 deleteCurrentSession: () => Promise<SessionResponse>
                 deleteUsersAllSessions: () => Promise<{ success: boolean; message: string }>
@@ -17,7 +17,7 @@ declare global {
 }
 
 export function auth({ adapter }: { adapter: Adapter }): RequestHandler {
-    return (req, res, next) => {
+    return async (req, res, next) => {
         const sessionId = req.cookies.session_id
         req.auth = {
             createSession: async (opts) => {
@@ -26,7 +26,7 @@ export function auth({ adapter }: { adapter: Adapter }): RequestHandler {
                 res.cookie("session_id", response.session.id)
                 return response
             },
-            getCurrentUser: () => adapter.getUserBySessionId(sessionId),
+            getCurrentUser: <T>() => adapter.getUserBySessionId<T>(sessionId),
             getCurrentSession: () => adapter.getSession(sessionId),
             deleteCurrentSession: async () => {
                 const response = await adapter.deleteSession(sessionId)
