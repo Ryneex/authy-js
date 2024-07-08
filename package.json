@@ -6,7 +6,7 @@
     "main": "index.js",
     "scripts": {
         "prebuild": "shx rm -rf dist",
-        "build": "tsc && tsc-alias && shx cp package.json dist",
+        "build": "tsc && tsc-alias && shx cp package.json LICENSE README.md dist",
         "upload": "cd dist && npm publish"
     },
     "dependencies": {
