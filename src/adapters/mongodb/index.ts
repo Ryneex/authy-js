@@ -5,7 +5,7 @@ import { sendError } from "@/utils/sendError"
 
 interface IConstructor {
     User: Model<any>
-    Session: Model<any>
+    Session: Model<any> | null
     dbConnectionUrl?: string
     mongoose?: typeof mongoose
 }
@@ -19,7 +19,7 @@ export class MongodbAdapter implements Adapter {
     constructor({ User, Session, dbConnectionUrl, mongoose }: IConstructor) {
         // connect mongoose instance thats passed from server, if not connected
         if (dbConnectionUrl) !mongoose?.connection.readyState && mongoose?.connect(dbConnectionUrl)
-        this.Session = Session
+        this.Session = Session as any
         this.User = User
     }
 

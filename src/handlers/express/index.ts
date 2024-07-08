@@ -1,4 +1,4 @@
-import { type RequestHandler } from "express"
+import { CookieOptions, type RequestHandler } from "express"
 import { Adapter, ICreateSessionOpts, SessionResponse, UserResponse } from "@/types"
 
 declare global {
@@ -16,14 +16,22 @@ declare global {
     }
 }
 
-export function auth({ adapter }: { adapter: Adapter }): RequestHandler {
+interface IAuthOpts {
+    adapter: Adapter
+    cookie?: { name?: string; options?: CookieOptions }
+}
+
+export function auth({ adapter, cookie }: IAuthOpts): RequestHandler {
     return async (req, res, next) => {
-        const sessionId = req.cookies.session_id
+        const sessionId = req.cookies[cookie?.name || "session_id"]
         req.auth = {
             createSession: async <T>(opts: ICreateSessionOpts) => {
-                const response = await adapter.createSession<{ id: string } & T>(opts)
+                const response = await adapter.createSession<{ id: string }>(opts)
                 if (!response.success) return response
-                res.cookie("session_id", response.session.id)
+                res.cookie(cookie?.name || "session_id", response.session.id, {
+                    secure: true,
+                    ...cookie?.options,
+                })
                 return response as T
             },
             getCurrentUser: <T>() => adapter.getUserBySessionId<T>(sessionId),
@@ -31,18 +39,17 @@ export function auth({ adapter }: { adapter: Adapter }): RequestHandler {
             deleteCurrentSession: async <T>() => {
                 const response = await adapter.deleteSession<T>(sessionId)
                 if (!response.success) return response
-                res.clearCookie("session_id")
+                res.clearCookie(cookie?.name || "session_id")
                 return response
             },
             deleteUsersAllSessions: async () => {
                 const response = await adapter.deleteUsersAllSessions(sessionId)
                 if (!response.success) return response
-                res.clearCookie("session_id")
+                res.clearCookie(cookie?.name || "session_id")
                 return response
             },
             adapter,
         }
-
         next()
     }
 }
