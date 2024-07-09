@@ -42,8 +42,11 @@ export class RedisAdapter implements Adapter {
         return await this.userDbAdapter.getUserByUserId(res.session.userId)
     }
 
-    async getUserByUserId<T>(): Promise<UserResponse<T>> {
-        return sendError("Redis don't store user informations")
+    async getUserByUserId<T>(userId: string): Promise<UserResponse<T>> {
+        if (!this.userDbAdapter) return sendError("userDbAdapter is required because redis don't contain user informations")
+        const res = await this.getUserByUserId<T>(userId)
+        if (!res.success) return res
+        return res
     }
 
     async deleteSession<T>(sessionId: string): Promise<SessionResponse<T>> {
