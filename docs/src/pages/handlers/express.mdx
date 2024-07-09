@@ -1,0 +1,104 @@
+# Express Handler
+
+The Express Handler provides middleware for managing sessions in your Express applications. This middleware adds session-related methods to the request object.
+
+### How to Use
+
+Follow these steps to integrate the Express Handler into your application:
+
+1. **Import Required Modules:**
+
+Ensure you have the necessary modules and adapters, like the MongoDB Adapter for Express.
+
+```ts copy filename="index.ts"
+import express from "express"
+import cookieParser from "cookie-parser"
+import mongoose from "mongoose"
+import { ExpressHandler } from "authy-js/handlers/express"
+import { MongoDBAdapter } from "authy-js/adapters/mongodb"
+
+// Import your MongoDB models
+import UserModel from "./models/user.model"
+import SessionModel from "./models/session.model"
+```
+
+2. **Set Up MongoDB Adapter:**
+
+Initialize the MongoDB Adapter with your User and Session models using Mongoose. Take a look at [MongoDB](/adapters/mongodb) Adapter for more information.
+
+```ts copy filename="index.ts"
+const mongodbAdapter = new MongoDBAdapter({
+    User: UserModel,
+    Session: SessionModel,
+    dbConnectionUrl: "mongodb://localhost:27017/YourDatabase",
+    mongoose: mongoose,
+})
+```
+
+3. **Create Express Middleware with ExpressHandler:**
+
+Generate middleware using the ExpressHandler function, specifying your adapter and optional cookie settings.
+
+```ts copy filename="index.ts"
+const middleware = ExpressHandler({
+    adapter: mongodbAdapter,
+    cookie: {}, // Optional cookie options
+})
+```
+
+4. **Use Middleware in Your Express Application:**
+
+Apply the middleware and define your routes.
+
+```ts copy filename="index.ts"
+const app = express()
+app.use(cookieParser())
+app.use(middleware)
+
+// Example route using session methods
+app.get("/", async (req, res) => {
+    req.auth // Provides session management methods
+    res.send("Hello World")
+})
+
+app.listen(3000, () => console.log("Server running on http://localhost:3000"))
+```
+
+5. **Example Routes:**
+
+Implement routes that utilize session management methods.
+
+```ts copy filename="index.ts"
+// Example: Create a session
+app.get("/create", async (req, res) => {
+    const expiresAt = new Date(Date.now() + 30000) // Expires in 30 seconds
+    const response = await req.auth.createSession({ userId: "yourUserId", expiresAt })
+    res.send(response)
+})
+
+// Example: Get current user details
+app.get("/check", async (req, res) => {
+    const response = await req.auth.getCurrentUser()
+    res.send(response)
+})
+
+// Example: Delete current session
+app.get("/delete", async (req, res) => {
+    const response = await req.auth.deleteCurrentSession()
+    res.send(response)
+})
+```
+
+### Methods
+
+-   **createSession()**: Creates a new session in the database.
+
+-   **getCurrentSession()**: Retrieves details of the current session.
+
+-   **getCurrentUser()**: Retrieves details of the authenticated user.
+
+-   **deleteCurrentSession()**: Deletes the current session.
+
+-   **deleteUsersAllSessions()**: Deletes all sessions associated with the current user.
+
+Using the Express Handler simplifies session management in Express applications, allowing flexible integration with your preferred database.

@@ -1,0 +1,86 @@
+# MongoDB Adapter
+
+The MongoDB adapter stores sessions in MongoDB. To use it, you need to create User and Session models.
+
+### Usage
+
+1. **Create a Session Model with Mongoose**
+
+Define the session model with a secure `_id`, `userId` (referring to the User model), and `expiresAt` fields.
+
+```ts copy
+import mongoose from "mongoose"
+import { v4 as uuidv4 } from "uuid"
+import { UserModel } from "./user.model.ts"
+
+const sessionSchema = new mongoose.Schema({
+    _id: {
+        type: String,
+        default: uuidv4,
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: UserModel, // You can also use string
+        required: true,
+    },
+    expiresAt: {
+        type: Date,
+        required: true,
+    },
+    // Add custom fields as needed
+})
+
+export const SessionModel = mongoose.model("Session", sessionSchema)
+```
+
+2. **Create a User Model with Mongoose**
+
+Define your user model with any fields you require. There are no mandatory fields.
+
+```ts copy
+import mongoose from "mongoose"
+
+const userSchema = new mongoose.Schema({
+    // Define your fields here
+    name: String,
+    email: String,
+    password: String,
+})
+
+export const UserModel = mongoose.model("User", userSchema)
+```
+
+3. **Create the MongoDB Adapter**
+
+Create an instance of the MongoDBAdapter, specifying the User and Session models.
+
+```ts copy
+import mongoose from "mongoose"
+
+const mongodbAdapter = new MongoDBAdapter({
+    User: UserModel,
+    Session: SessionModel,
+
+    // Optional: If not connecting manually with mongoose.connect()
+    dbConnectionUrl: "mongodb://localhost:27017/YourDatabase",
+    mongoose: mongoose, // Required if not connecting manually
+})
+```
+
+Once set up correctly, you can use this adapter with your preferred handler.
+
+### Methods
+
+These methods are used by handlers.
+
+-   **createSession**: Creates a new session in the database with the provided options.
+
+-   **getSession**: Retrieves a session from the database using the session ID.
+
+-   **deleteSession**: Deletes a session from the database using the session ID.
+
+-   **getUserBySessionId**: Retrieves user information associated with a specific session ID.
+
+-   **getUserByUserId**: Retrieves user information using the user ID.
+
+-   **deleteUsersAllSessions**: Deletes all sessions associated with a specific user, identified by the session ID.

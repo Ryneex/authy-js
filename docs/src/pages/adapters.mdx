@@ -1,0 +1,18 @@
+# Adapters
+
+Authy uses adapters to connect [handlers](./handlers) with different databases like Redis, MongoDB, etc. These adapters act as bridges, allowing your application to store and retrieve sessions efficiently.
+
+### How Do Adapters Work?
+
+Adapters are designed to seamlessly integrate with different databases, ensuring flexibility and compatibility across frameworks and environments. When integrating an adapter, developers pass it as a parameter to the framework-specific handler functions. These adapters facilitate efficient data storage and retrieval operations specific to the chosen database.
+
+### Adding More Adapters
+
+We continuously expand our library by adding support for additional adapters. If you require session storage in a database not currently supported, you can contribute by creating a new adapter. Our architecture is designed to accommodate new adapters easily, ensuring that developers have the flexibility to integrate with their preferred databases.
+
+### Available Adapters
+
+-   [Mongodb](/get-started/adapters/mongodb)
+-   [Redis](/get-started/adapters/redis)
+
+We intend to introduce additional adapters in the near future. You are welcome to contribute!

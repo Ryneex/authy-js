@@ -1,0 +1,41 @@
+# Redis Adapter
+
+The Redis adapter stores sessions in a Redis database. Unlike other adapters, it does not store user information. Therefore, you need to provide an additional adapter to retrieve user data from another database.
+
+### Usage
+
+1. **Create the Redis Adapter**
+
+The Redis adapter requires a Redis client created using the `redis` package. It supports CRUD operations on sessions but needs an extra adapter for user data retrieval.
+
+```ts copy
+import { createClient } from "redis"
+import { RedisAdapter } from "authy-js/adapters/redis"
+
+// Create a Redis client with connection options
+const client = createClient({})
+
+// Create the Redis adapter, passing an additional adapter for user data retrieval
+const adapter = new RedisAdapter({
+    client,
+    userDbAdapter: mongodbAdapter, // Adapter for the database storing user information
+})
+```
+
+Once you have set up the additional adapter and passed it to the Redis adapter, you can use this adapter with all available handlers without any limitations.
+
+### Methods
+
+These methods are used by handlers.
+
+-   **createSession**: Creates a new session in the database with the provided options.
+
+-   **getSession**: Retrieves a session from the database using the session ID.
+
+-   **deleteSession**: Deletes a session from the database using the session ID.
+
+-   **getUserBySessionId**: Retrieves user information associated with a specific session ID.
+
+-   **getUserByUserId**: Retrieves user information using the user ID.
+
+-   **deleteUsersAllSessions**: Deletes all sessions associated with a specific user, identified by the session ID.

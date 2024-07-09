@@ -1,0 +1,17 @@
+# Handlers
+
+Handlers are essential parts of our authentication library. They connect your application to different databases, like Redis and MongoDB, making it easy to switch databases when needed.
+
+### How Do Handlers Work?
+
+Handlers use adapters, which are modules that link to different databases. When you use a handler, it takes an adapter as a parameter to store and retrieve session data. This setup allows our library to support multiple frameworks and databases.
+
+### Adding More Handlers
+
+Our library is designed to be flexible. If you need to support more frameworks or databases, you can add more handlers. Each new handler should take an adapter as a parameter and define how to manage session data for that framework.
+
+### Available Handlers
+
+-   [Express](/handlers/express)
+
+Handlers ensure your session management is strong and adaptable, providing a consistent and secure experience across different platforms and databases.
