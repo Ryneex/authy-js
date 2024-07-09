@@ -1,5 +1,5 @@
-export { MongodbAdapter } from "./adapters/mongodb"
+export { MongoDBAdapter } from "./adapters/mongodb"
 export { RedisAdapter } from "./adapters/redis"
-import { auth as ExpressAuth } from "./handlers/express"
+import { ExpressHandler } from "./handlers/express"
 
-export default { express: ExpressAuth }
+export default { express: ExpressHandler }

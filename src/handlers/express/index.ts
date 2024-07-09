@@ -21,7 +21,7 @@ interface IAuthOpts {
     cookie?: { name?: string; options?: CookieOptions }
 }
 
-export function auth({ adapter, cookie }: IAuthOpts): RequestHandler {
+export function ExpressHandler({ adapter, cookie }: IAuthOpts): RequestHandler {
     return async (req, res, next) => {
         const sessionId = req.cookies[cookie?.name || "session_id"]
         req.auth = {
@@ -54,4 +54,4 @@ export function auth({ adapter, cookie }: IAuthOpts): RequestHandler {
     }
 }
 
-export default auth
+export default ExpressHandler

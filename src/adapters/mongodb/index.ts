@@ -12,7 +12,7 @@ interface IConstructor {
 
 const isSessionExpired = (session: any) => new Date() > session.expiresAt
 
-export class MongodbAdapter implements Adapter {
+export class MongoDBAdapter implements Adapter {
     private Session: Model<any>
     private User: Model<any>
 
