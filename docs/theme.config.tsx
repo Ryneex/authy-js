@@ -13,7 +13,25 @@ const config: DocsThemeConfig = {
     chat: {
         link: "https://discord.com",
     },
+    footer: {
+        component: "",
+    },
     docsRepositoryBase: "https://github.com/ryneex/authy-js/tree/main/docs",
+    useNextSeoProps() {
+        return {
+            titleTemplate: "%s | Authy-JS",
+            defaultTitle: "Authy-JS Documentation",
+            description: "A detailed documentation for Authy-JS.",
+            keywords: ["Authy-JS", "Authentication", "Documentation", "Authy JS Documentation", "Authy JS Docs", "Learn Authy-JS"],
+            openGraph: {
+                type: "website",
+                locale: "en_US",
+                url: "https://authy-js.vercel.com",
+                site_name: "Authy-JS",
+                description: "A detailed documentation for Authy-JS.",
+            },
+        }
+    },
 }
 
 export default config
