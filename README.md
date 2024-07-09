@@ -10,7 +10,7 @@ Welcome to the Multi-Framework Authentication Library! This library provides a f
 
 ## Documentation
 
-For detailed documentation, visit our [Documentation](https://authy.vercel.app) website.
+For detailed documentation, visit our [Documentation](https://authy-js.vercel.app) website.
 
 ## Contributing
 
