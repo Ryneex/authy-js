@@ -1,4 +1,5 @@
 import { CookieOptions, type RequestHandler } from "express"
+import Cookie from "cookie"
 import { Adapter, ICreateSessionOpts, SessionResponse, UserResponse } from "@/types"
 
 declare global {
@@ -23,7 +24,7 @@ interface IAuthOpts {
 
 export function ExpressHandler({ adapter, cookie }: IAuthOpts): RequestHandler {
     return async (req, res, next) => {
-        const sessionId = req.cookies[cookie?.name || "session_id"]
+        const sessionId = Cookie.parse(req.headers.cookie || "")[cookie?.name || "session_id"]
         req.auth = {
             createSession: async <T>(opts: ICreateSessionOpts) => {
                 const response = await adapter.createSession<{ id: string }>(opts)
