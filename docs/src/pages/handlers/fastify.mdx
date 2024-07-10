@@ -1,0 +1,97 @@
+# Fastify Handler
+
+The Fastify Handler provides middleware for managing sessions in your Fastify applications. This middleware adds session-related methods to the request object.
+
+### How to Use
+
+Follow these steps to integrate the Fastify Handler into your application:
+
+1. **Import Required Modules:**
+
+Ensure you have the necessary modules and adapters, like the FastifyHandler and MongoDBAdapter.
+
+```ts copy filename="index.ts"
+import fastify from "fastify"
+import mongoose from "mongoose"
+import { FastifyHandler } from "authy-js/handlers/fastify"
+import { MongoDBAdapter } from "authy-js/adapters/mongodb"
+
+// Import your MongoDB models
+import UserModel from "./models/user.model"
+import SessionModel from "./models/session.model"
+```
+
+2. **Set Up MongoDB Adapter:**
+
+Initialize the MongoDB Adapter with your User and Session models. Take a look at [MongoDB](/adapters/mongodb) Adapter for more information.
+
+```ts copy filename="index.ts"
+const mongodbAdapter = new MongoDBAdapter({
+    User: UserModel,
+    Session: SessionModel,
+    dbConnectionUrl: "mongodb://localhost:27017/YourDatabase",
+    mongoose: mongoose,
+})
+```
+
+3. **Initialize the FastifyHandler:**
+
+Initialize the FastifyHandler by providing the Fastify instance, selecting your adapter, and optional cookie settings.
+
+```ts copy filename="index.ts"
+const app = fastify()
+FastifyHandler(app, {
+    adapter: mongodbAdapter,
+    cookie: {}, // Optional cookie options
+})
+```
+
+4. **Create routes using fastify:**
+
+Define the required routes using the Fastify instance:
+
+```ts copy filename="index.ts"
+// Example route using session methods
+app.get("/", async (req, res) => {
+    req.auth // Provides session management methods
+    return "Hello World"
+})
+
+app.listen({ port: 3000 }, () => console.log("Server running on http://localhost:3000"))
+```
+
+5. **Example Routes:**
+
+Implement routes that utilize session management methods.
+
+```ts copy filename="index.ts"
+// Example: Create a session
+app.get("/create", async (req, res) => {
+    const expiresAt = new Date(Date.now() + 30000) // Expires in 30 seconds
+    return await req.auth.createSession({ userId: "yourUserId", expiresAt })
+})
+
+// Example: Get current user details
+app.get("/check", async (req, res) => {
+    return await req.auth.getCurrentUser()
+})
+
+// Example: Delete current session
+app.get("/delete", async (req, res) => {
+    return await req.auth.deleteCurrentSession()
+})
+```
+
+### Methods
+
+-   **createSession()**: Creates a new session in the database.
+
+-   **getCurrentSession()**: Retrieves details of the current session.
+
+-   **getCurrentUser()**: Retrieves details of the authenticated user.
+
+-   **deleteCurrentSession()**: Deletes the current session.
+
+-   **deleteUsersAllSessions()**: Deletes all sessions associated with the current user.
+
+Using the Fastify Handler simplifies session management in Fastify applications, allowing flexible integration with your preferred database.
