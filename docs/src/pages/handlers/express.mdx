@@ -8,11 +8,10 @@ Follow these steps to integrate the Express Handler into your application:
 
 1. **Import Required Modules:**
 
-Ensure you have the necessary modules and adapters, like the MongoDB Adapter for Express.
+Ensure you have the necessary modules and adapters, like the MongoDB Adapter.
 
 ```ts copy filename="index.ts"
 import express from "express"
-import cookieParser from "cookie-parser"
 import mongoose from "mongoose"
 import { ExpressHandler } from "authy-js/handlers/express"
 import { MongoDBAdapter } from "authy-js/adapters/mongodb"
@@ -24,7 +23,7 @@ import SessionModel from "./models/session.model"
 
 2. **Set Up MongoDB Adapter:**
 
-Initialize the MongoDB Adapter with your User and Session models using Mongoose. Take a look at [MongoDB](/adapters/mongodb) Adapter for more information.
+Initialize the MongoDB Adapter with your User and Session models. Take a look at [MongoDB](/adapters/mongodb) Adapter for more information.
 
 ```ts copy filename="index.ts"
 const mongodbAdapter = new MongoDBAdapter({
@@ -52,7 +51,6 @@ Apply the middleware and define your routes.
 
 ```ts copy filename="index.ts"
 const app = express()
-app.use(cookieParser())
 app.use(middleware)
 
 // Example route using session methods
