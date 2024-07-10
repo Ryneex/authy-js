@@ -10,9 +10,9 @@ export type UserResponse<T = unknown> = { success: true; user: T } | ErrorRespon
 
 export interface Adapter {
     createSession<T>(opts: ICreateSessionOpts): Promise<SessionResponse<T>>
-    getSession<T>(sessionId: string): Promise<SessionResponse<T>>
-    deleteSession<T>(sessionId: string): Promise<SessionResponse<T>>
-    getUserBySessionId<T>(sessionId: string): Promise<UserResponse<T>>
-    getUserByUserId<T>(userId: string): Promise<UserResponse<T>>
-    deleteUsersAllSessions(sessionId: string): Promise<{ success: boolean; message: string }>
+    getSession<T>(sessionId?: string): Promise<SessionResponse<T>>
+    deleteSession<T>(sessionId?: string): Promise<SessionResponse<T>>
+    getUserBySessionId<T>(sessionId?: string): Promise<UserResponse<T>>
+    getUserByUserId<T>(userId?: string): Promise<UserResponse<T>>
+    deleteUsersAllSessions(sessionId?: string): Promise<{ success: boolean; message: string }>
 }
