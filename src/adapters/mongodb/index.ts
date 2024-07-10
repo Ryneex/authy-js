@@ -87,7 +87,7 @@ export class MongoDBAdapter implements Adapter {
         try {
             const session = await this.Session.findById(sessionId)
             if (!session) return sendError("Couldn't find session")
-            await this.Session.deleteMany({ user: session.userId })
+            await this.Session.deleteMany({ userId: session.userId })
             return { success: true, message: "Deleted All Sessions" }
         } catch (error) {
             return sendError("Something wen't wrong, couldn't delete all sessions")
