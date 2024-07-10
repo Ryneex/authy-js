@@ -5,9 +5,9 @@
     "type": "module",
     "main": "index.js",
     "scripts": {
-        "prebuild": "shx rm -rf dist",
+        "clean": "shx rm -rf dist",
         "build": "tsc && tsc-alias && shx cp package.json LICENSE README.md dist",
-        "upload": "cd dist && npm publish",
+        "upload": "npm run build && cd dist && npm publish",
         "format": "prettier --write ."
     },
     "dependencies": {
