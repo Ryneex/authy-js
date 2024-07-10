@@ -5,8 +5,7 @@
     "type": "module",
     "main": "index.js",
     "scripts": {
-        "clean": "shx rm -rf dist",
-        "build": "tsc && tsc-alias && shx cp package.json LICENSE README.md dist",
+        "build": "shx rm -rf dist && tsc && tsc-alias && shx cp package.json LICENSE README.md dist",
         "upload": "npm run build && cd dist && npm publish",
         "format": "prettier --write ."
     },
@@ -29,7 +28,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/ryneex/authy-js.git"
+        "url": "git+https://github.com/ryneex/authy-js.git"
     },
     "homepage": "https://authy-js.vercel.app/",
     "keywords": [
