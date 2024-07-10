@@ -33,7 +33,7 @@ export class MongoDBAdapter implements Adapter {
         }
     }
 
-    async getSession<T>(sessionId: string): Promise<SessionResponse<T>> {
+    async getSession<T>(sessionId?: string): Promise<SessionResponse<T>> {
         if (!sessionId) return sendError("Session ID is required")
         try {
             const session = await this.Session.findById(sessionId)
@@ -48,7 +48,7 @@ export class MongoDBAdapter implements Adapter {
         }
     }
 
-    async getUserBySessionId<T>(sessionId: string): Promise<UserResponse<T>> {
+    async getUserBySessionId<T>(sessionId?: string): Promise<UserResponse<T>> {
         try {
             const response = await this.getSession<ICreateSessionOpts>(sessionId)
             if (!response.success) return response
@@ -60,7 +60,7 @@ export class MongoDBAdapter implements Adapter {
         }
     }
 
-    async getUserByUserId<T>(userId: string): Promise<UserResponse<T>> {
+    async getUserByUserId<T>(userId?: string): Promise<UserResponse<T>> {
         if (!userId) return sendError("User ID is required")
         try {
             const user = await this.User.findById(userId)
@@ -71,7 +71,7 @@ export class MongoDBAdapter implements Adapter {
         }
     }
 
-    async deleteSession<T>(sessionId: string): Promise<SessionResponse<T>> {
+    async deleteSession<T>(sessionId?: string): Promise<SessionResponse<T>> {
         if (!sessionId) return sendError("Session ID is required")
         try {
             const session = await this.Session.findByIdAndDelete(sessionId)
@@ -82,7 +82,7 @@ export class MongoDBAdapter implements Adapter {
         }
     }
 
-    async deleteUsersAllSessions(sessionId: string): Promise<{ success: boolean; message: string }> {
+    async deleteUsersAllSessions(sessionId?: string): Promise<{ success: boolean; message: string }> {
         if (!sessionId) return sendError("Session ID is required")
         try {
             const session = await this.Session.findById(sessionId)

@@ -24,7 +24,7 @@ export class RedisAdapter implements Adapter {
         }
     }
 
-    async getSession<T>(sessionId: string): Promise<SessionResponse<T>> {
+    async getSession<T>(sessionId?: string): Promise<SessionResponse<T>> {
         if (!sessionId) return sendError("Session ID is required")
         try {
             const session = await this.client.get(`sessions:${sessionId}`)
@@ -35,21 +35,21 @@ export class RedisAdapter implements Adapter {
         }
     }
 
-    async getUserBySessionId<T>(sessionId: string): Promise<UserResponse<T>> {
+    async getUserBySessionId<T>(sessionId?: string): Promise<UserResponse<T>> {
         if (!this.userDbAdapter) return sendError("userDbAdapter is required because redis don't contain user informations")
         const res = await this.getSession<ICreateSessionOpts>(sessionId)
         if (!res.success) return res
         return await this.userDbAdapter.getUserByUserId(res.session.userId)
     }
 
-    async getUserByUserId<T>(userId: string): Promise<UserResponse<T>> {
+    async getUserByUserId<T>(userId?: string): Promise<UserResponse<T>> {
         if (!this.userDbAdapter) return sendError("userDbAdapter is required because redis don't contain user informations")
         const res = await this.getUserByUserId<T>(userId)
         if (!res.success) return res
         return res
     }
 
-    async deleteSession<T>(sessionId: string): Promise<SessionResponse<T>> {
+    async deleteSession<T>(sessionId?: string): Promise<SessionResponse<T>> {
         if (!sessionId) return sendError("Session ID is required")
         try {
             const res = await this.getSession<T>(sessionId)
