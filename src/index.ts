@@ -1,5 +1,6 @@
 export { MongoDBAdapter } from "./adapters/mongodb"
 export { RedisAdapter } from "./adapters/redis"
-import { ExpressHandler } from "./handlers/express"
-
-export default { express: ExpressHandler }
+export { ExpressHandler } from "./handlers/express"
+export { FastifyHandler } from "./handlers/fastify"
+export { NextHandler } from "./handlers/next"
+export * from "./types"
