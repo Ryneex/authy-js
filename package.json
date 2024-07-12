@@ -1,6 +1,6 @@
 {
     "name": "authy-js",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "A simple and modular authentication library.",
     "type": "module",
     "main": "index.js",
@@ -13,6 +13,7 @@
         "cookie": "^0.6.0",
         "fastify": "^4.28.1",
         "mongoose": "^8.4.4",
+        "next": "^14.2.5",
         "redis": "^4.6.15",
         "uuid": "^10.0.0"
     },
