@@ -1,0 +1,90 @@
+# Next Handler
+
+The Next Handler provides a function to manage sessions in your Next.js application.
+
+{/* prettier-ignore */}
+<div className="p-3 mt-3 bg-red-500/30 text-red-100 rounded-md">
+    - Sessions can't be created or deleted from server components. 
+    - Use it within server actions or API routes. 
+    - Other auth methods can be used anywhere, including server components, server actions, or API routes.
+</div>
+
+### How to Use
+
+Follow these steps to integrate the Next Handler into your application:
+
+1. **Import Required Modules:**
+
+Make sure you import the necessary modules and adapters.
+
+```ts copy filename="src/auth.ts"
+import mongoose from "mongoose"
+import { NextHandler } from "authy-js/handlers/next"
+import { MongoDBAdapter } from "authy-js/adapters/mongodb"
+
+// Import your MongoDB models
+import UserModel from "./models/user.model"
+import SessionModel from "./models/session.model"
+```
+
+2. **Set Up MongoDB Adapter:**
+
+Initialize the MongoDB Adapter with your User and Session models. Refer to the [MongoDB Adapter](/adapters/mongodb) for more details.
+
+```ts copy filename="src/auth.ts"
+const mongodbAdapter = new MongoDBAdapter({
+    User: UserModel,
+    Session: SessionModel,
+    dbConnectionUrl: "mongodb://localhost:27017/YourDatabase",
+    mongoose: mongoose,
+})
+```
+
+3. **Initialize the NextHandler:**
+
+Set up the NextHandler with your adapter and optional cookie settings.
+
+```ts copy filename="src/auth.ts"
+// auth is a function, `auth()` will return all the necessary methods
+export const auth = NextHandler({ adapter: mongodbAdapter, cookie: {} })
+```
+
+4. **Examples using server actions:**
+
+Here are some examples of how to use the auth function in your Next.js application.
+
+```ts copy filename="src/actions.ts"
+"use server"
+
+import { auth } from "@/auth"
+
+export async function create() {
+    // Can't call it directly inside server components
+    const expiresAt = new Date(Date.now() + 30000) // Expires in 30 seconds
+    return await auth().createSession({ userId: "yourUserId", expiresAt })
+}
+
+export async function getUser() {
+    // Can be called directly inside server components
+    return await auth().getCurrentUser()
+}
+
+export async function logout() {
+    // Can't call it directly inside server components
+    return await auth().deleteCurrentSession()
+}
+```
+
+### Methods
+
+-   **createSession()**: Creates a new session in the database.
+
+-   **getCurrentSession()**: Retrieves details of the current session.
+
+-   **getCurrentUser()**: Retrieves details of the authenticated user.
+
+-   **deleteCurrentSession()**: Deletes the current session.
+
+-   **deleteUsersAllSessions()**: Deletes all sessions associated with the current user.
+
+With these steps, you can easily manage sessions in your Next.js application using the Next Handler.
