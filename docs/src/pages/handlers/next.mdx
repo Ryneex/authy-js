@@ -3,7 +3,7 @@
 The Next Handler provides a function to manage sessions in your Next.js application.
 
 {/* prettier-ignore */}
-<div className="p-3 mt-3 bg-red-500/30 text-red-100 rounded-md">
+<div className="p-3 mt-3 bg-red-500/20 text-red-500 dark:bg-red-500/30 dark:text-white/90 rounded-md">
     - Sessions can't be created or deleted from server components. 
     - Use it within server actions or API routes. 
     - Other auth methods can be used anywhere, including server components, server actions, or API routes.
@@ -45,7 +45,7 @@ const mongodbAdapter = new MongoDBAdapter({
 Set up the NextHandler with your adapter and optional cookie settings.
 
 ```ts copy filename="src/auth.ts"
-// auth is a function, `auth()` will return all the necessary methods
+// `auth` has all the necessary methods
 export const auth = NextHandler({ adapter: mongodbAdapter, cookie: {} })
 ```
 
@@ -59,19 +59,19 @@ Here are some examples of how to use the auth function in your Next.js applicati
 import { auth } from "@/auth"
 
 export async function create() {
-    // Can't call it directly inside server components
     const expiresAt = new Date(Date.now() + 30000) // Expires in 30 seconds
-    return await auth().createSession({ userId: "yourUserId", expiresAt })
+    // Can't call it directly inside server components
+    return await auth.createSession({ userId: "yourUserId", expiresAt })
 }
 
 export async function getUser() {
     // Can be called directly inside server components
-    return await auth().getCurrentUser()
+    return await auth.getCurrentUser()
 }
 
 export async function logout() {
     // Can't call it directly inside server components
-    return await auth().deleteCurrentSession()
+    return await auth.deleteCurrentSession()
 }
 ```
 
