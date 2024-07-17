@@ -1,4 +1,4 @@
-import { Adapter, ICreateSessionOpts } from "@/types"
+import { Adapter, ICreateSessionOpts, SessionResponse } from "@/types"
 import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies"
 import { cookies } from "next/headers"
 
@@ -7,28 +7,28 @@ interface IAuthOpts {
     cookie?: { name?: string; options?: Partial<ResponseCookie> }
 }
 
-export function NextHandler({ adapter, cookie }: IAuthOpts) {
+export function NextHandler<U, S = unknown>({ adapter, cookie }: IAuthOpts) {
     return {
-        createSession: async <T>(opts: ICreateSessionOpts) => {
-            const response = await adapter.createSession<{ id: string }>(opts)
+        createSession: async (opts: ICreateSessionOpts) => {
+            const response = await adapter.createSession<{ id: string } & S>(opts)
             if (!response.success) return response
             cookies().set(cookie?.name || "session_id", response.session.id, {
                 secure: true,
                 ...cookie?.options,
             })
-            return response as T
+            return response as SessionResponse<S>
         },
-        getCurrentUser: <T>() => {
+        getCurrentUser: () => {
             const sessionId = cookies().get(cookie?.name || "session_id")?.value
-            return adapter.getUserBySessionId<T>(sessionId)
+            return adapter.getUserBySessionId<U>(sessionId)
         },
-        getCurrentSession: <T>() => {
+        getCurrentSession: () => {
             const sessionId = cookies().get(cookie?.name || "session_id")?.value
-            return adapter.getSession<T>(sessionId)
+            return adapter.getSession<S>(sessionId)
         },
-        deleteCurrentSession: async <T>() => {
+        deleteCurrentSession: async () => {
             const sessionId = cookies().get(cookie?.name || "session_id")?.value
-            const response = await adapter.deleteSession<T>(sessionId)
+            const response = await adapter.deleteSession<S>(sessionId)
             if (!response.success) return response
             cookies().delete(cookie?.name || "session_id")
             return response
