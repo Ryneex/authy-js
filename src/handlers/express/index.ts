@@ -33,7 +33,7 @@ export function ExpressHandler({ adapter, cookie }: IAuthOpts): RequestHandler {
                     secure: true,
                     ...cookie?.options,
                 })
-                return response as T
+                return response as SessionResponse<T>
             },
             getCurrentUser: <T>() => adapter.getUserBySessionId<T>(sessionId),
             getCurrentSession: <T>() => adapter.getSession<T>(sessionId),
