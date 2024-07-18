@@ -49,6 +49,11 @@ Set up the NextHandler with your adapter and optional cookie settings.
 export const auth = NextHandler({ adapter: mongodbAdapter, cookie: {} })
 ```
 
+```ts copy filename="src/auth.ts"
+// or you can provide your user and session types to get suggestions
+export const auth = NextHandler<IUser, ISession>({ adapter: mongodbAdapter, cookie: {} })
+```
+
 4. **Examples using server actions:**
 
 Here are some examples of how to use the auth function in your Next.js application.
