@@ -1,0 +1,65 @@
+# Prisma Adapter
+
+The Prisma adapter stores sessions in your preferred database using prisma.
+
+### Usage
+
+1. **Create required prisma models**
+
+Create `User` and `Session` model in prisma file. `id`, `userId` and `expiresAt` field is required in session model.
+
+```prisma filename="schema.prisma" copy
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb" // Your preffered database
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id       String    @id @default(cuid()) @map("_id")
+  sessions session[]
+  // Other fields
+}
+
+model session {
+  id        String   @id @default(cuid()) @map("_id")
+  userId    String
+  expiresAt DateTime
+  user      user     @relation(fields: [userId], references: [id])
+  // Other fields
+}
+```
+
+3. **Create the Prisma Adapter**
+
+Create an instance of the PrismaAdapter, and pass it the user and session model from prisma client.
+
+```ts copy
+import { PrismaAdapter } from "authy-js/adapters/prisma"
+import { PrismaClient } from "@prisma/client"
+
+const client = new PrismaClient()
+
+const adapter = new PrismaAdapter({ Session: client.session, User: client.user })
+```
+
+Once set up correctly, you can use this adapter with your preferred handler.
+
+### Methods
+
+These methods are used by handlers.
+
+-   **createSession**: Creates a new session in the database with the provided options.
+
+-   **getSession**: Retrieves a session from the database using the session ID.
+
+-   **deleteSession**: Deletes a session from the database using the session ID.
+
+-   **getUserBySessionId**: Retrieves user information associated with a specific session ID.
+
+-   **getUserByUserId**: Retrieves user information using the user ID.
+
+-   **deleteUsersAllSessions**: Deletes all sessions associated with a specific user, identified by the session ID.
