@@ -11,7 +11,7 @@ const config: DocsThemeConfig = {
         toggleButton: true,
     },
     chat: {
-        link: "https://discord.com",
+        link: "https://discord.com/users/893972714547724368",
     },
     footer: {
         component: "",
