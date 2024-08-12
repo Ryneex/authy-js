@@ -14,6 +14,7 @@ export function NextHandler<U, S = unknown>({ adapter, cookie }: IAuthOpts) {
             if (!response.success) return response
             cookies().set(cookie?.name || "session_id", response.session.id, {
                 secure: true,
+                expires: opts.expiresAt,
                 ...cookie?.options,
             })
             return response as SessionResponse<S>
