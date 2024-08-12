@@ -32,10 +32,7 @@ export class PrismaAdapter implements Adapter {
         try {
             const session = await this.Session.findUnique({ where: { id: sessionId } })
             if (!session) return sendError("Couldn't find session")
-            if (isSessionExpired(session)) {
-                await this.Session.delete({ where: { id: sessionId } })
-                return sendError("Session has expired")
-            }
+            if (isSessionExpired(session)) return sendError("Session has expired")
             return { success: true, session }
         } catch (error) {
             return sendError("Something went wrong, couldn't get session")

@@ -38,10 +38,7 @@ export class MongoDBAdapter implements Adapter {
         try {
             const session = await this.Session.findById(sessionId)
             if (!session) return sendError("Couldn't find session")
-            if (isSessionExpired(session)) {
-                await session.deleteOne()
-                return sendError("Session has expired")
-            }
+            if (isSessionExpired(session)) return sendError("Session has expired")
             return { success: true, session }
         } catch (error) {
             return sendError("Something went wrong, couldn't get session")
