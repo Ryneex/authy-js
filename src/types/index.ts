@@ -4,9 +4,9 @@ export interface ICreateSessionOpts {
     [x: string]: unknown
 }
 
-export type ErrorResponse = { success: false; message: string }
-export type SessionResponse<T = unknown> = { success: true; session: T } | ErrorResponse
-export type UserResponse<T = unknown> = { success: true; user: T } | ErrorResponse
+export type ErrorResponse<T = unknown> = { success: false; message: string } & T
+export type SessionResponse<T = unknown> = { success: true; session: T } | ErrorResponse<{ session: null }>
+export type UserResponse<T = unknown> = { success: true; user: T } | ErrorResponse<{ user: null }>
 
 export interface Adapter {
     createSession<T>(opts: ICreateSessionOpts): Promise<SessionResponse<T>>
