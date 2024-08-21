@@ -1,6 +1,6 @@
 {
     "name": "authy-js",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "A simple and modular authentication library.",
     "type": "module",
     "main": "index.js",
