@@ -36,7 +36,7 @@ export class RedisAdapter implements Adapter {
 
     async getUserByUserId<T>(userId?: string): Promise<UserResponse<T>> {
         if (!this.userDbAdapter) return UserError("userDbAdapter is required because redis do not contain any user informations")
-        const res = await this.getUserByUserId<T>(userId)
+        const res = await this.userDbAdapter.getUserByUserId<T>(userId)
         if (!res.success) return res
         return res
     }
