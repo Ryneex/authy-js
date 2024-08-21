@@ -1,7 +1,7 @@
-import { ErrorResponse } from "@/types"
+export const UserError = (e: string) => {
+    return { success: false as false, message: e, user: null }
+}
 
-export const sendError = (e: unknown): ErrorResponse => {
-    if (typeof e === "string") return { success: false, message: e }
-    if (e instanceof Error) return { success: false, message: e.message }
-    return { success: false, message: "Something wen't wrong" }
+export const SessionError = (e: string) => {
+    return { success: false as false, message: e, session: null }
 }
