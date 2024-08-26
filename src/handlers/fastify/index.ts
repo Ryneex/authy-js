@@ -29,7 +29,6 @@ export function FastifyHandler(fastify: FastifyInstance, { adapter, cookie }: IA
                 const response = await adapter.createSession<{ id: string }>(opts)
                 if (!response.success) return response
                 const sessionCookie = Cookie.serialize(cookie?.name || "session_id", response.session.id, {
-                    secure: true,
                     expires: opts.expiresAt,
                     ...cookie?.options,
                 })

@@ -30,7 +30,6 @@ export function ExpressHandler({ adapter, cookie }: IAuthOpts): RequestHandler {
                 const response = await adapter.createSession<{ id: string }>(opts)
                 if (!response.success) return response
                 res.cookie(cookie?.name || "session_id", response.session.id, {
-                    secure: true,
                     expires: opts.expiresAt,
                     ...cookie?.options,
                 })

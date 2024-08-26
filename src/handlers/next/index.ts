@@ -13,7 +13,6 @@ export function NextHandler<U, S = unknown>({ adapter, cookie }: IAuthOpts) {
             const response = await adapter.createSession<{ id: string } & S>(opts)
             if (!response.success) return response
             cookies().set(cookie?.name || "session_id", response.session.id, {
-                secure: true,
                 expires: opts.expiresAt,
                 ...cookie?.options,
             })
