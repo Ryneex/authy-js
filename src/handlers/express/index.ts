@@ -1,6 +1,7 @@
 import { CookieOptions, type RequestHandler } from "express"
 import Cookie from "cookie"
 import { Adapter, ICreateSessionOpts, SessionResponse, UserResponse } from "@/types"
+import { parseExpires } from "@/utils/parseExpires"
 
 declare global {
     namespace Express {
@@ -17,22 +18,25 @@ declare global {
     }
 }
 
+interface CookieOption extends Omit<CookieOptions, "expires"> {
+    expires: string | number | undefined
+}
+
 interface IAuthOpts {
     adapter: Adapter
-    cookie?: { name?: string; options?: CookieOptions }
+    cookie?: { name?: string; options?: CookieOption }
 }
 
 export function ExpressHandler({ adapter, cookie }: IAuthOpts): RequestHandler {
+    const cookieName = cookie?.name || "session_id"
+    const cookieExpiresIn = cookie?.options?.expires
     return async (req, res, next) => {
-        const sessionId = Cookie.parse(req.headers.cookie || "")[cookie?.name || "session_id"]
+        const sessionId = Cookie.parse(req.headers.cookie || "")[cookieName]
         req.auth = {
             createSession: async <T>(opts: ICreateSessionOpts) => {
                 const response = await adapter.createSession<{ id: string }>(opts)
                 if (!response.success) return response
-                res.cookie(cookie?.name || "session_id", response.session.id, {
-                    expires: opts.expiresAt,
-                    ...cookie?.options,
-                })
+                res.cookie(cookieName, response.session.id, { ...cookie?.options, expires: parseExpires(cookieExpiresIn) })
                 return response as SessionResponse<T>
             },
             getCurrentUser: <T>() => adapter.getUserBySessionId<T>(sessionId),
